@@ -1,0 +1,1 @@
+Projeto desenvolvido no curso GO Expert da FullCycle baseado nos padrões implementados no repositório https://github.com/golang-standards/project-layout
