@@ -6,7 +6,7 @@ import (
 
 type UserRepository interface {
 	Create(user *entity.User) error
-	Find(email string) (*entity.User, error)
+	FindByEmail(email string) (*entity.User, error)
 }
 
 type ProductRepository interface {
