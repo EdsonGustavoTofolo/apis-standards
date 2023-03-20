@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/EdsonGustavoTofolo/apis-standards/configs"
 	"github.com/EdsonGustavoTofolo/apis-standards/internal/entity"
 	"github.com/EdsonGustavoTofolo/apis-standards/internal/infra/database"
 	"github.com/EdsonGustavoTofolo/apis-standards/internal/infra/webserver/handlers"
@@ -12,7 +13,7 @@ import (
 )
 
 func main() {
-	//config := configs.LoadConfig("./cmd/server/")
+	config := configs.LoadConfig("./cmd/server/")
 
 	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
 
@@ -26,7 +27,7 @@ func main() {
 	productHandler := handlers.NewProductHandler(productDB)
 
 	userDB := database.NewUser(db)
-	userHandler := handlers.NewUserHandler(userDB)
+	userHandler := handlers.NewUserHandler(userDB, config.TokenAuth, config.JWTExpiresIn)
 
 	router := chi.NewRouter()
 	router.Use(middleware.Logger)
@@ -37,6 +38,7 @@ func main() {
 	router.Put("/products/{id}", productHandler.UpdateProduct)
 	router.Delete("/products/{id}", productHandler.DeleteProduct)
 
+	router.Post("/users/token", userHandler.GetJwt)
 	router.Post("/users", userHandler.CreateUser)
 
 	http.ListenAndServe(":8000", router)
