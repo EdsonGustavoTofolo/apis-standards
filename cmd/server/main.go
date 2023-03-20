@@ -2,18 +2,37 @@ package main
 
 import (
 	"github.com/EdsonGustavoTofolo/apis-standards/configs"
+	_ "github.com/EdsonGustavoTofolo/apis-standards/docs"
 	"github.com/EdsonGustavoTofolo/apis-standards/internal/entity"
 	"github.com/EdsonGustavoTofolo/apis-standards/internal/infra/database"
 	"github.com/EdsonGustavoTofolo/apis-standards/internal/infra/webserver/handlers"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/jwtauth"
+	httpSwagger "github.com/swaggo/http-swagger"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"log"
 	"net/http"
 )
 
+// @title Go Expert API Example
+// @version 1.o
+// @description Product API with authentication
+// @termsOfService http://swagger.io/terms/
+
+// @contact.name Edson Gustavo Tofolo
+// @contact.url http//github.com/EdsonGustavoTofolo
+// @contact.email edsontofolo@gmail.com
+
+// @license.name Edson License
+// @license.url http//github.com/
+
+// @host localhost:8000
+// @BasePath /
+// @securityDefinitions.apiKey ApiKeyAuth
+// @in header
+// @name Authorization
 func main() {
 	config := configs.LoadConfig("./cmd/server/")
 
@@ -51,6 +70,8 @@ func main() {
 
 	router.Post("/users/token", userHandler.GetJwt)
 	router.Post("/users", userHandler.CreateUser)
+
+	router.Get("/docs/*", httpSwagger.Handler(httpSwagger.URL("http://localhost:8000/docs/doc.json")))
 
 	http.ListenAndServe(":8000", router)
 }
